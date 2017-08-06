@@ -1,18 +1,51 @@
 # Quintifio
 ## Introduction
 `**TODO**`
-## Steps on how to run
-As it currently is, to run `quin` do the following:
-+ On the top folder of the project, run
-    + `make setup`
-	+ `make project`
-+ A executable should now be found in the `build` folder
-    + To execute you can run `./build/quin`
-+ There is also an option to clean
-    + `make clean` will delete the folder `build` and everything on it
+## Setup
++ The project was setup with the `1.64.0` version of boost
++ Once dowloading `boost`, follow the [Getting started with boost](http://www.boost.org/doc/libs/1_54_0/more/getting_started/windows.html#id29)
+guide to build the binary libraries.
+   + When executing `b2`, I used `b2 link=shared`
++ Visual Studio  needs to link to the new libraries
+ + Go to Project-> project Properties
+   + In C/C++ -> General add the include folder from OpenCV, e.g. `C:\boost\boost_1_64_0`, to Additional Include Directories
+    + In Linker -> General add the lib folder from OpenCV, e.g. `C:\boost\boost_1_64_0\stage\lib`, to Additional Library Directories
++ Test a program like the below
+
+```c++
+#include <iostream>
+#include <boost/filesystem.hpp>
+using namespace std;
+using namespace boost::filesystem;
+
+int main(int argc, char* argv[])
+{
+	if (argc < 2)
+	{
+		cout << "Usage: tut2 path\n";
+		return 1;
+	}
+
+	path p(argv[1]);  // avoid repeated path construction below
+
+	if (exists(p))    // does path p actually exist?
+	{
+		if (is_regular_file(p))        // is path p a regular file?
+			cout << p << " size is " << file_size(p) << '\n';
+
+		else if (is_directory(p))      // is path p a directory?
+			cout << p << " is a directory\n";
+
+		else
+			cout << p << " exists, but is not a regular file or directory\n";
+	}
+	else
+		cout << p << " does not exist\n";
+
+	return 0;
+}
+```
+
 ## Resources
-1. [derekmolloy intro to cmkae](http://derekmolloy.ie/hello-world-introductions-to-cmake/)
-1. [SO: How to link program with boost](https://stackoverflow.com/questions/3897839/how-to-link-c-program-with-boost-using-cmake)
-1. [SO: How to link to boost libraries using Cmake](https://stackoverflow.com/questions/28547754/how-to-link-to-boost-libraries-using-cmake)
-1. [SO: How to activate C++ 11 in CMake](https://stackoverflow.com/questions/10851247/how-to-activate-c-11-in-cmake)
-1. [cmake FindBoost](https://cmake.org/cmake/help/v3.0/module/FindBoost.html)
+1. [Getting started with boost](http://www.boost.org/doc/libs/1_54_0/more/getting_started/windows.html#id29)
+1. [b2 execution examples](http://www.boost.org/build/doc/html/bbv2/overview/invocation.html)
