@@ -1,6 +1,6 @@
 ///
 /// Use this website as reference:
-///		http://www.boost.org/doc/libs/1_64_0/libs/filesystem/doc/reference.html#class-path
+///		http://www.boost.org/doc/libs/1_64_0/libs/filesystem/doc/reference.html
 ///
 
 
@@ -24,36 +24,52 @@ int main(int argc, char** argv)
 	directory_entry start_directory(argv[argc - 1]);
 	
 	/// Check to see if it is a valid directory
-	if (is_directory(start_directory.status()))
+	if (!is_directory(start_directory.status()))
 	{
-		std::cout << "It is a directory!" << std::endl;
-	}
-	else
-	{ 
-		std::cout << "It is not a directory!" << std::endl;
+		std::cout << argv[argc - 1] <<  " is not a valid directory" << std::endl;
 		return 1;
 	}
 	
-	/// Create a directory iterator to start traversing
-	recursive_directory_iterator file_iterator(start_directory.path());
-	/* Learning on recursive directory iterators!*/
-	std::cout << "Folder: " << *file_iterator << std::endl;
-	std::cout << "level: " << file_iterator.level() << std::endl;
+	/// TEMP
+	std::cout << start_directory.path() << std::endl;
 
-	file_iterator++;
+	/// Create an iterator and traverse through each entry
+	auto entry_iterator = recursive_directory_iterator(start_directory.path()); /// Has to outside to be able to access level()
 
-	std::cout << "level: " << *file_iterator << std::endl;
+	for (const auto &entry : entry_iterator)
+	{/// For every entry, print the lvl and name
 
-	file_iterator++;
+		// For looks
+		std::cout << "|";
 
-	std::cout << "level: " << *file_iterator << std::endl;
+		for (size_t i = 0; i < entry_iterator.level() + 1; i++)
+		{
+			std::cout << "--";
+		}
+		std::cout << entry.path().filename();
 
-	/// Check to see if it is a valid file/*Learning*/
-	if (is_regular_file((*file_iterator).status()))
-	{
-		std::cout << "It is not a directory!" << std::endl;
+		// Can also check if the entry is a file
+		if (is_regular_file(entry.status()))
+		{
+			std::cout << "\t\t\t-->  is a file" << std::endl;
+		}
+		// Or check if the entry is a directory
+		if (is_directory(entry.status()))
+		{
+			std::cout << "\t\t\t-->  is a file" << std::endl;
+		}
 	}
-	
+
+	// TODO: Create a data structure to hold the data
+	// Structure should hold:
+	// + The level <- Might not be necessary if saved correctly in graph
+	// + The type (directory or file)
+	// + **Color, depending if file, directory, and extension
+	// + Maybe other information depending on how complex we need this to be
+
+	// TODO: Save all data structure entry in a graph
+
+	// TODO: Traverse the graph 
 
 	return 0;
 }
